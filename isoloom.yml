@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://www.isoloom.com/schema/v1.json
+# OWASP SKF Blind SQL Injection (OWASP Security Knowledge Framework labs, by Glenn ten Cate, Riccardo ten Cate and the SKF contributors) as an Isoloom spec:
+# a Flask page viewer whose page id goes into a SQL query without showing its result (blind SQL injection). The SKF lab folder python/SQLI-blind is
+# vendored unchanged in app/ and built by its own Dockerfile.
+# `isoloom generate`, then `isoloom run docker`.
+version: 1
+name: skf-sqli-blind
+
+networks:
+  lab: { cidr: 10.60.131.0/24, internet: false }
+
+machines:
+  web:
+    networks: { lab: 10 }
+    services: [{ port: 5000, name: web, http: true, publish: 5050 }]
+    resources: { cpus: 1, memory_mb: 256 }
+    docker:
+      build: app
+
+checks:
+  - name: the lab answers
+    http: http://web:5000/
+    wait: 120
+  - name: page 1 is found in the database, an unknown id is not
+    script: checks/page.sh
+
+message: |
+  OWASP SKF Blind SQL Injection answers at http://localhost:{{ machines.web.services.0.publish }}/.
+  /home/1 exists and /home/999 does not: the page only tells you yes or no.

@@ -1,0 +1,144 @@
+{
+  "generated_by_isoloom": "from isoloom.yml; don't edit: change the spec and run `isoloom generate` (`isoloom check` fails when this file is out of date)",
+  "resolved_version": 1,
+  "name": "skf-sqli-blind",
+  "instance": null,
+  "inputs": [],
+  "networks": {
+    "lab": {
+      "cidr": "10.60.131.0/24",
+      "docker_cidr": "10.60.131.0/24",
+      "internet": false,
+      "gateway": null,
+      "gateway_address": "10.60.131.1",
+      "router": null,
+      "controller": "10.60.131.253"
+    }
+  },
+  "reach": [],
+  "machines": {
+    "web": {
+      "access": false,
+      "supplied": false,
+      "shapes": [
+        "docker"
+      ],
+      "arch": "amd64",
+      "os": null,
+      "windows": false,
+      "addresses": {
+        "lab": "10.60.131.10"
+      },
+      "docker_addresses": {
+        "lab": "10.60.131.10"
+      },
+      "services": [
+        {
+          "port": 5000,
+          "name": "web",
+          "http": true,
+          "publish": 5050
+        }
+      ],
+      "depends_on": [],
+      "inputs": [],
+      "volumes": {},
+      "resources": {
+        "cpus": 1,
+        "memory_mb": 256,
+        "disk_gb": 20
+      },
+      "gateway_of": [],
+      "routes": [],
+      "default_gateway": null,
+      "offline": true
+    }
+  },
+  "start_order": [
+    "web"
+  ],
+  "clones": {},
+  "tools": {},
+  "groups": {},
+  "router": null,
+  "controller": {
+    "addresses": {
+      "lab": "10.60.131.253"
+    }
+  },
+  "published": [
+    {
+      "machine": "web",
+      "port": 5000,
+      "host_port": 5050
+    }
+  ],
+  "targets": {
+    "possible": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "generated": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "refused": {},
+    "not_possible": {
+      "hybrid": "only when some machines are containers and others are VMs",
+      "vagrant": "needs `vm:` on web",
+      "proxmox": "needs `vm:` on web",
+      "cloud-vm": "needs `vm:` on web",
+      "external": "needs `external:` on web"
+    }
+  },
+  "checks": {
+    "default_position": "networks",
+    "positions": [
+      {
+        "position": "networks",
+        "machine": null,
+        "runner": "isoloom-check",
+        "checks": [
+          {
+            "name": "the lab answers",
+            "derived": false,
+            "kind": "http",
+            "target": "http://web:5000/",
+            "expect": "200",
+            "wait": 120
+          },
+          {
+            "name": "page 1 is found in the database, an unknown id is not",
+            "derived": false,
+            "kind": "script",
+            "target": "checks/page.sh",
+            "expect": "",
+            "wait": 0
+          }
+        ]
+      },
+      {
+        "position": "web",
+        "machine": "web",
+        "runner": "isoloom-check-web",
+        "checks": [
+          {
+            "name": "no internet from web",
+            "derived": true,
+            "kind": "http",
+            "target": "http://1.1.1.1/",
+            "expect": "blocked",
+            "wait": 0
+          }
+        ]
+      }
+    ]
+  },
+  "message": "OWASP SKF Blind SQL Injection answers at http://localhost:5050/.\n/home/1 exists and /home/999 does not: the page only tells you yes or no.\n"
+}
