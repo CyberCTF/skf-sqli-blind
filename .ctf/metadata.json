@@ -4,11 +4,5 @@
   "question": "Use a boolean-based blind SQL injection in the page id to extract data the application never displays, such as a user's password.",
   "category": "WEB",
   "difficulty": 2,
-  "evidence_kind": "SECRET",
-  "capabilities": [
-    "sql-injection",
-    "blind-sql-injection",
-    "sqlite",
-    "injection"
-  ]
+  "evidence_kind": "SECRET"
 }
