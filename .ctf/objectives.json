@@ -1,0 +1,54 @@
+{
+  "objectives": [
+    {
+      "key": "main",
+      "title": "Read the flag",
+      "prompt": "Extract the flags table with a blind SQL injection.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-skf-sqli-blind}",
+      "hints": [
+        "The page only tells you whether a row was found.",
+        "Read about boolean-based blind SQL injection."
+      ],
+      "steps": [
+        {
+          "key": "db",
+          "title": "Identify the database",
+          "prompt": "Which database engine stores the pages?",
+          "check": {
+            "answer": [
+              "sqlite",
+              "sqlite3"
+            ]
+          }
+        },
+        {
+          "key": "technique",
+          "title": "Name the technique",
+          "prompt": "What kind of blind SQL injection fits a found/not found answer?",
+          "check": {
+            "answer": [
+              "boolean",
+              "boolean-based",
+              "boolean based",
+              "boolean blind"
+            ]
+          }
+        },
+        {
+          "key": "table",
+          "title": "Find the target",
+          "prompt": "Which table holds the flag?",
+          "check": {
+            "answer": [
+              "flags"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

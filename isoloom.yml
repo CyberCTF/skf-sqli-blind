@@ -6,6 +6,9 @@
 version: 1
 name: skf-sqli-blind
 
+# Given by the CyberCTF launcher: this player's flag. Without it the development flag.
+inputs: [CTF_FLAG_MAIN]
+
 networks:
   lab: { cidr: 10.60.131.0/24, internet: false }
 
@@ -14,8 +17,11 @@ machines:
     networks: { lab: 10 }
     services: [{ port: 5000, name: web, http: true, publish: 5050 }]
     resources: { cpus: 1, memory_mb: 256 }
+    inputs: [CTF_FLAG_MAIN]
+    volumes: { db: /home/app/SQLI-blind/config }   # config/Database.db, shared with ctf/flag.sh, which adds the flags table at every start
     docker:
       build: app
+      init: [ctf/flag.sh]
 
 checks:
   - name: the lab answers

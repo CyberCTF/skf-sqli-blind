@@ -1,7 +1,7 @@
 {
   "title": "OWASP SKF Blind SQL Injection",
   "description": "A small Flask site that shows a few fixed pages. The page id from the URL path goes unsanitized into a SQLite query; the response only says whether a row was found.",
-  "question": "Use a boolean-based blind SQL injection in the page id to extract data the application never displays, such as a user's password.",
+  "question": "Use a boolean-based blind SQL injection in the page id to extract the flag from the flags table.",
   "category": "WEB",
   "difficulty": 2,
   "evidence_kind": "SECRET"
