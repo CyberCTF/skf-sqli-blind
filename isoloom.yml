@@ -15,13 +15,18 @@ networks:
 machines:
   web:
     networks: { lab: 10 }
-    services: [{ port: 5000, name: web, http: true, publish: 5050 }]
+    ports: { web: { port: 5000, protocol: http, publish: 5050 } }
     resources: { cpus: 1, memory_mb: 256 }
-    inputs: [CTF_FLAG_MAIN]
-    volumes: { db: /home/app/SQLI-blind/config }   # config/Database.db, shared with ctf/flag.sh, which adds the flags table at every start
-    docker:
+    files:
+      # The player's flag, delivered at each start; the seed step puts it in a flags table of the
+      # lab's SQLite database, where the blind SQL injection reaches it. Without the input the
+      # inert dev placeholder.
+      - path: /run/lab/flag
+        input: CTF_FLAG_MAIN
+        mode: "0444"
+    setup: [ctf/seed-flag.sh]
+    app:
       build: app
-      init: [ctf/flag.sh]
 
 checks:
   - name: the lab answers
@@ -31,5 +36,5 @@ checks:
     script: checks/page.sh
 
 message: |
-  OWASP SKF Blind SQL Injection answers at http://localhost:{{ machines.web.services.0.publish }}/.
+  OWASP SKF Blind SQL Injection answers at {{ machines.web.ports.web.url }}.
   /home/1 exists and /home/999 does not: the page only tells you yes or no.
